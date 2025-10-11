@@ -81,13 +81,12 @@ chartab = {
     "\n": 0o12,
     "\b": 0o13,
     " ": 0o14,
-    "=": 0o15,  #i
-    "p": 0o16,  #u
-    ",": 0o17,  #-
-    ".": 0o20,  #+
-    "*": 0o21,  #|
-    "@": 0o21,
-    "[": 0o22,  ##
+    "i": 0o15,
+    "p": 0o16,
+    "-": 0o17,
+    "+": 0o20,
+    "|": 0o21,
+    "#": 0o22,
     # CASE 0o23
     "A": 0o24,
     "B": 0o25,
@@ -114,7 +113,28 @@ chartab = {
     "W": 0o52,
     "X": 0o53,
     "Y": 0o54,
-    "Z": 0o55
+    "Z": 0o55,
+    # META 0o56
+    "→": 0o57,
+    "?": 0o60,
+    "=": 0o61,
+    "u": 0o62,
+    ",": 0o63,
+    ".": 0o64,
+    "⊟": 0o65,
+    "@": 0o65,
+    "[": 0o66,
+    "_": 0o67,
+    "\"": 0o70,
+    "„": 0o71,
+    "<": 0o72,
+    ">": 0o73,
+    "]": 0o74,
+    "ˣ": 0o75,
+    "*": 0o75,
+    ":": 0o76,
+    "ʸ": 0o77,
+    "y": 0o77
 }
 
 def debug(message):
@@ -183,7 +203,7 @@ def parse(line, store=foo):
     if line == "":
         return None
 
-    m = re.compile(r'^[ \t]*[*@]([0-7]+)').match(line)
+    m = re.compile(r'^[ \t]*[⊟@]([0-7]+)').match(line)
     if m:
         labels["p"] = int(m.group(1), 8)
         debug(f"address {pee():04o}")
@@ -193,7 +213,10 @@ def parse(line, store=foo):
         label = m.group(1)
         debug(f"label {label} = {pee():04o}")
         labels[label] = pee()
+        oldpee = pee()
         parse(m.group(2), core)
+        if pee() == oldpee:
+            core(0)
         return None
     m = re.compile(r'^([0-9][A-Z])=(.*)').match(line)
     if m:
